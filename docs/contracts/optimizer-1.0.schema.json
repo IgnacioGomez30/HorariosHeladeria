@@ -1,0 +1,1174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:heladeria:optimizer-contract:1.0",
+  "title": "Horarios — Contrato local de planificación 1.0",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/response"
+    },
+    {
+      "$ref": "#/$defs/cancel"
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "pattern": "^[a-zA-Z0-9_.:-]+$"
+    },
+    "day": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "instant": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:00Z$"
+    },
+    "block": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/instant"
+        },
+        "end": {
+          "$ref": "#/$defs/instant"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "dateRange": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/day"
+        },
+        "endExclusive": {
+          "$ref": "#/$defs/day"
+        }
+      },
+      "required": [
+        "start",
+        "endExclusive"
+      ],
+      "additionalProperties": false
+    },
+    "kind": {
+      "enum": [
+        "WORK",
+        "FIXED_OFF",
+        "ROTATING_OFF",
+        "ABSENCE",
+        "UNASSIGNED"
+      ]
+    },
+    "workBlock": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/instant"
+        },
+        "end": {
+          "$ref": "#/$defs/instant"
+        },
+        "support": {
+          "enum": [
+            "NONE",
+            "COMMITTED",
+            "TO_COMMIT"
+          ]
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "support"
+      ],
+      "additionalProperties": false
+    },
+    "selection": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/kind"
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/workBlock"
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "blocks"
+      ],
+      "additionalProperties": false
+    },
+    "choice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "selection": {
+          "$ref": "#/$defs/selection"
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "preferencePenalty": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "id",
+        "selection",
+        "sourceIds",
+        "preferencePenalty"
+      ],
+      "additionalProperties": false
+    },
+    "person": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "role": {
+          "enum": [
+            "EMPLOYEE",
+            "OWNER"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "cell": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "personId": {
+          "$ref": "#/$defs/id"
+        },
+        "day": {
+          "$ref": "#/$defs/day"
+        },
+        "scope": {
+          "enum": [
+            "EDIT",
+            "WITNESS",
+            "FIXED"
+          ]
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/choice"
+          }
+        },
+        "baseline": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/selection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/lock"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "personId",
+        "day",
+        "scope",
+        "choices",
+        "baseline",
+        "locks"
+      ],
+      "additionalProperties": false
+    },
+    "lock": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "DAY"
+            },
+            "value": {
+              "$ref": "#/$defs/selection"
+            },
+            "sourceId": {
+              "$ref": "#/$defs/id"
+            }
+          },
+          "required": [
+            "mode",
+            "value",
+            "sourceId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "BLOCK"
+            },
+            "value": {
+              "$ref": "#/$defs/workBlock"
+            },
+            "sourceId": {
+              "$ref": "#/$defs/id"
+            }
+          },
+          "required": [
+            "mode",
+            "value",
+            "sourceId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "term": {
+      "type": "object",
+      "properties": {
+        "cellId": {
+          "$ref": "#/$defs/id"
+        },
+        "choiceId": {
+          "$ref": "#/$defs/id"
+        },
+        "coefficient": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cellId",
+        "choiceId",
+        "coefficient"
+      ],
+      "additionalProperties": false
+    },
+    "bound": {
+      "type": "object",
+      "properties": {
+        "ruleId": {
+          "$ref": "#/$defs/id"
+        },
+        "measure": {
+          "enum": [
+            "OP_MINUTES",
+            "REAL_MINUTES",
+            "WORK_DAYS",
+            "FIXED_OFF",
+            "ROTATING_OFF",
+            "NIGHT_UNITS",
+            "OTHER_COUNT"
+          ]
+        },
+        "terms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/term"
+          }
+        },
+        "constant": {
+          "type": "integer"
+        },
+        "min": {
+          "type": "integer"
+        },
+        "max": {
+          "type": "integer"
+        },
+        "targetMinutes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "ruleId",
+        "measure",
+        "terms",
+        "constant"
+      ],
+      "additionalProperties": false
+    },
+    "rest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "BETWEEN_DUTIES"
+            },
+            "ruleId": {
+              "$ref": "#/$defs/id"
+            },
+            "personId": {
+              "$ref": "#/$defs/id"
+            },
+            "arrivalDates": {
+              "$ref": "#/$defs/dateRange"
+            },
+            "minMinutes": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "type",
+            "ruleId",
+            "personId",
+            "arrivalDates",
+            "minMinutes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "UNINTERRUPTED_IN_WINDOW"
+            },
+            "ruleId": {
+              "$ref": "#/$defs/id"
+            },
+            "personId": {
+              "$ref": "#/$defs/id"
+            },
+            "window": {
+              "$ref": "#/$defs/block"
+            },
+            "minMinutes": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "type",
+            "ruleId",
+            "personId",
+            "window",
+            "minMinutes"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "ruleId": {
+          "$ref": "#/$defs/id"
+        },
+        "window": {
+          "$ref": "#/$defs/block"
+        },
+        "eligiblePersonIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "minEmployees": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minTotal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "idealTotal": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "ruleId",
+        "window",
+        "eligiblePersonIds",
+        "minEmployees",
+        "minTotal",
+        "idealTotal"
+      ],
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "revisionId": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "PATTERN",
+            "CALENDAR",
+            "AVAILABILITY",
+            "EXCEPTION",
+            "LIMIT",
+            "COVERAGE",
+            "LOCK",
+            "FAIRNESS",
+            "SUPPORT",
+            "PERSON",
+            "PREFERENCE",
+            "HISTORY"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "revisionId",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "history": {
+      "type": "object",
+      "properties": {
+        "personId": {
+          "$ref": "#/$defs/id"
+        },
+        "day": {
+          "$ref": "#/$defs/day"
+        },
+        "selection": {
+          "$ref": "#/$defs/selection"
+        },
+        "revisionId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "personId",
+        "day",
+        "selection",
+        "revisionId"
+      ],
+      "additionalProperties": false
+    },
+    "opportunity": {
+      "type": "object",
+      "properties": {
+        "saturday": {
+          "$ref": "#/$defs/day"
+        },
+        "eligibleDays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/day"
+          },
+          "minItems": 1,
+          "maxItems": 3
+        }
+      },
+      "required": [
+        "saturday",
+        "eligibleDays"
+      ],
+      "additionalProperties": false
+    },
+    "fairMember": {
+      "type": "object",
+      "properties": {
+        "personId": {
+          "$ref": "#/$defs/id"
+        },
+        "group": {
+          "$ref": "#/$defs/id"
+        },
+        "month": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+        },
+        "eligible": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/opportunity"
+          }
+        }
+      },
+      "required": [
+        "personId",
+        "group",
+        "month",
+        "eligible"
+      ],
+      "additionalProperties": false
+    },
+    "fairness": {
+      "type": "object",
+      "properties": {
+        "ruleId": {
+          "$ref": "#/$defs/id"
+        },
+        "targetMonth": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+        },
+        "windowMonths": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "monthlyGoal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "debtCapUnits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "weekendDays": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "FRI",
+              "SAT",
+              "SUN"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "creditMode": {
+          "enum": [
+            "ANY",
+            "ALL"
+          ]
+        },
+        "creditKinds": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "ROTATING_OFF",
+              "FIXED_OFF"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "calendarDayFree": {
+          "type": "boolean"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fairMember"
+          }
+        }
+      },
+      "required": [
+        "ruleId",
+        "targetMonth",
+        "windowMonths",
+        "monthlyGoal",
+        "debtCapUnits",
+        "weekendDays",
+        "creditMode",
+        "creditKinds",
+        "calendarDayFree",
+        "members"
+      ],
+      "additionalProperties": false
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "profiles": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "BALANCED",
+              "IDEAL_COVERAGE",
+              "LESS_OWNER"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "timeLimitMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "threads": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minMaterialMinutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fairnessToleranceUnits": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "maxProposals": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        }
+      },
+      "required": [
+        "profiles",
+        "timeLimitMs",
+        "seed",
+        "threads",
+        "minMaterialMinutes",
+        "fairnessToleranceUnits",
+        "maxProposals"
+      ],
+      "additionalProperties": false
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "timeZone": {
+          "const": "America/Argentina/Mendoza"
+        },
+        "tzdataVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "editPeriod": {
+          "$ref": "#/$defs/dateRange"
+        },
+        "visiblePeriod": {
+          "$ref": "#/$defs/dateRange"
+        },
+        "contextPeriod": {
+          "$ref": "#/$defs/dateRange"
+        },
+        "people": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/person"
+          },
+          "minItems": 1
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cell"
+          },
+          "minItems": 1
+        },
+        "bounds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bound"
+          }
+        },
+        "rest": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rest"
+          }
+        },
+        "coverage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/coverage"
+          }
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/history"
+          }
+        },
+        "fairness": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fairness"
+          }
+        },
+        "candidateDomainComplete": {
+          "type": "boolean"
+        },
+        "boundaryComplete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "timeZone",
+        "tzdataVersion",
+        "editPeriod",
+        "visiblePeriod",
+        "contextPeriod",
+        "people",
+        "sources",
+        "cells",
+        "bounds",
+        "rest",
+        "coverage",
+        "history",
+        "fairness",
+        "candidateDomainComplete",
+        "boundaryComplete"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "requestId": {
+          "$ref": "#/$defs/id"
+        },
+        "snapshotToken": {
+          "$ref": "#/$defs/id"
+        },
+        "messageType": {
+          "const": "REQUEST"
+        },
+        "operation": {
+          "enum": [
+            "GENERATE",
+            "REPAIR"
+          ]
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "scenario": {
+          "enum": [
+            "GUARANTEED",
+            "IF_SUPPORT_COMMITS"
+          ]
+        },
+        "model": {
+          "$ref": "#/$defs/model"
+        },
+        "options": {
+          "$ref": "#/$defs/options"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "snapshotToken",
+        "messageType",
+        "operation",
+        "requires",
+        "scenario",
+        "model",
+        "options"
+      ],
+      "additionalProperties": false
+    },
+    "assignment": {
+      "type": "object",
+      "properties": {
+        "cellId": {
+          "$ref": "#/$defs/id"
+        },
+        "choiceId": {
+          "$ref": "#/$defs/id"
+        },
+        "selection": {
+          "$ref": "#/$defs/selection"
+        }
+      },
+      "required": [
+        "cellId",
+        "choiceId",
+        "selection"
+      ],
+      "additionalProperties": false
+    },
+    "metric": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "value": {
+          "type": "integer"
+        },
+        "unit": {
+          "enum": [
+            "PEOPLE",
+            "CELLS",
+            "MINUTES",
+            "PERSON_MINUTES",
+            "FAIRNESS_UNITS",
+            "POINTS",
+            "EVENTS"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "value",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "phase": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/id"
+        },
+        "incumbent": {
+          "type": "integer"
+        },
+        "lowerBound": {
+          "type": "integer"
+        },
+        "proven": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "level",
+        "incumbent",
+        "proven"
+      ],
+      "additionalProperties": false
+    },
+    "fairDetail": {
+      "type": "object",
+      "properties": {
+        "personId": {
+          "$ref": "#/$defs/id"
+        },
+        "group": {
+          "$ref": "#/$defs/id"
+        },
+        "ruleId": {
+          "$ref": "#/$defs/id"
+        },
+        "targetUnits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "creditUnits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "priorUnits": {
+          "type": "integer"
+        },
+        "debtUnits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "monthDeficitUnits": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "creditedSaturdays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/day"
+          }
+        }
+      },
+      "required": [
+        "personId",
+        "group",
+        "ruleId",
+        "targetUnits",
+        "creditUnits",
+        "priorUnits",
+        "debtUnits",
+        "monthDeficitUnits",
+        "creditedSaturdays"
+      ],
+      "additionalProperties": false
+    },
+    "proposal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "profile": {
+          "enum": [
+            "BALANCED",
+            "IDEAL_COVERAGE",
+            "LESS_OWNER"
+          ]
+        },
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/assignment"
+          },
+          "minItems": 1
+        },
+        "pendingSupportCells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/metric"
+          }
+        },
+        "levels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/phase"
+          }
+        },
+        "fairnessByMember": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fairDetail"
+          }
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "profile",
+        "assignments",
+        "pendingSupportCells",
+        "metrics",
+        "levels",
+        "fairnessByMember",
+        "changes"
+      ],
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/id"
+        },
+        "ruleIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "cellIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "window": {
+          "$ref": "#/$defs/block"
+        },
+        "evidence": {
+          "enum": [
+            "INPUT",
+            "PRECHECK",
+            "SUFFICIENT_CORE",
+            "VALIDATED_SHORTFALL",
+            "SEARCH_LIMIT",
+            "CANCEL",
+            "INTERNAL"
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "ruleIds",
+        "cellIds",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "requestId": {
+          "$ref": "#/$defs/id"
+        },
+        "snapshotToken": {
+          "$ref": "#/$defs/id"
+        },
+        "messageType": {
+          "const": "RESPONSE"
+        },
+        "inputSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "engineVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "solverVersion": {
+          "$ref": "#/$defs/id"
+        },
+        "status": {
+          "enum": [
+            "OPTIMAL",
+            "FEASIBLE",
+            "INFEASIBLE",
+            "UNKNOWN",
+            "INVALID_INPUT",
+            "CANCELLED",
+            "ENGINE_ERROR"
+          ]
+        },
+        "stopReason": {
+          "enum": [
+            "COMPLETED",
+            "TIME_LIMIT",
+            "RESOURCE_LIMIT",
+            "CANCEL",
+            "INVALID_INPUT",
+            "ENGINE_ERROR",
+            "NO_PROOF"
+          ]
+        },
+        "proposals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/proposal"
+          },
+          "maxItems": 3
+        },
+        "conditionalPlans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/proposal"
+          },
+          "maxItems": 3
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic"
+          }
+        },
+        "searchMetadata": {
+          "type": "object",
+          "properties": {
+            "elapsedMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "seed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "threads": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "elapsedMs",
+            "seed",
+            "threads"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "snapshotToken",
+        "messageType",
+        "inputSha256",
+        "engineVersion",
+        "capabilities",
+        "solverVersion",
+        "status",
+        "stopReason",
+        "proposals",
+        "conditionalPlans",
+        "diagnostics",
+        "searchMetadata"
+      ],
+      "additionalProperties": false
+    },
+    "cancel": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "messageType": {
+          "const": "CANCEL"
+        },
+        "requestId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "messageType",
+        "requestId"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,14 @@
+# Entorno local, archivos de trabajo y copias del encargado
+.venv/
+__pycache__/
+.pytest_cache/
+build/
+dist/
+datos-locales/
+respaldos/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.hhbackup

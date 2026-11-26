@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "demo-repair",
+  "snapshotToken": "demo-repair-v1",
+  "messageType": "RESPONSE",
+  "inputSha256": "780a578f6c1d30c2fe8988a622d9bccc00cb74f2a7bda476bc48277a5455849b",
+  "engineVersion": "doc-example-v1",
+  "capabilities": [
+    "cells-v1",
+    "coverage-v1",
+    "repair-v1"
+  ],
+  "solverVersion": "synthetic",
+  "status": "FEASIBLE",
+  "stopReason": "TIME_LIMIT",
+  "proposals": [
+    {
+      "id": "reparacion-demo",
+      "profile": "BALANCED",
+      "assignments": [
+        {
+          "cellId": "A-tue",
+          "choiceId": "absent",
+          "selection": {
+            "kind": "ABSENCE",
+            "blocks": []
+          }
+        },
+        {
+          "cellId": "B-tue",
+          "choiceId": "extended",
+          "selection": {
+            "kind": "WORK",
+            "blocks": [
+              {
+                "start": "2027-02-02T17:00:00Z",
+                "end": "2027-02-03T00:00:00Z",
+                "support": "NONE"
+              }
+            ]
+          }
+        }
+      ],
+      "pendingSupportCells": [],
+      "metrics": [
+        {
+          "id": "CHANGED_PEOPLE",
+          "value": 2,
+          "unit": "PEOPLE"
+        },
+        {
+          "id": "CHANGED_CELLS",
+          "value": 2,
+          "unit": "CELLS"
+        },
+        {
+          "id": "CHANGED_MINUTES",
+          "value": 420,
+          "unit": "MINUTES"
+        },
+        {
+          "id": "IDEAL_SHORTFALL",
+          "value": 0,
+          "unit": "PERSON_MINUTES"
+        },
+        {
+          "id": "OWNER_MINUTES",
+          "value": 0,
+          "unit": "MINUTES"
+        },
+        {
+          "id": "HOURS_DEVIATION",
+          "value": 0,
+          "unit": "MINUTES"
+        },
+        {
+          "id": "PREFERENCE_PENALTY",
+          "value": 0,
+          "unit": "POINTS"
+        },
+        {
+          "id": "WORST_DEBT",
+          "value": 0,
+          "unit": "FAIRNESS_UNITS"
+        },
+        {
+          "id": "TOTAL_DEBT",
+          "value": 0,
+          "unit": "FAIRNESS_UNITS"
+        },
+        {
+          "id": "MONTH_DEFICIT",
+          "value": 0,
+          "unit": "FAIRNESS_UNITS"
+        },
+        {
+          "id": "REPEATED_CATEGORY",
+          "value": 0,
+          "unit": "EVENTS"
+        },
+        {
+          "id": "REPEATED_WEEKDAY",
+          "value": 0,
+          "unit": "EVENTS"
+        }
+      ],
+      "levels": [],
+      "fairnessByMember": [],
+      "changes": [
+        "A-tue",
+        "B-tue"
+      ]
+    }
+  ],
+  "conditionalPlans": [],
+  "diagnostics": [],
+  "searchMetadata": {
+    "elapsedMs": 1000,
+    "seed": 1,
+    "threads": 1
+  }
+}

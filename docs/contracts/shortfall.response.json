@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "demo-shortfall",
+  "snapshotToken": "demo-snapshot-v2",
+  "messageType": "RESPONSE",
+  "inputSha256": "131fdb9fe554ab184f7985d9b4539bf9c5b20021c314a478892cba9c77852b8f",
+  "engineVersion": "doc-example-v1",
+  "capabilities": [
+    "cells-v1",
+    "real-rest-v1",
+    "coverage-v1"
+  ],
+  "solverVersion": "synthetic",
+  "status": "INFEASIBLE",
+  "stopReason": "COMPLETED",
+  "proposals": [],
+  "conditionalPlans": [],
+  "diagnostics": [
+    {
+      "code": "INSUFFICIENT_ELIGIBLE_PEOPLE",
+      "ruleIds": [
+        "minimum"
+      ],
+      "cellIds": [
+        "A-mon"
+      ],
+      "window": {
+        "start": "2027-02-02T03:00:00Z",
+        "end": "2027-02-02T04:00:00Z"
+      },
+      "evidence": "PRECHECK"
+    }
+  ],
+  "searchMetadata": {
+    "elapsedMs": 0,
+    "seed": 1,
+    "threads": 1
+  }
+}

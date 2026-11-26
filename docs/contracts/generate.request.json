@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "demo-night",
+  "snapshotToken": "demo-snapshot-v1",
+  "messageType": "REQUEST",
+  "operation": "GENERATE",
+  "requires": [
+    "cells-v1",
+    "real-rest-v1",
+    "coverage-v1"
+  ],
+  "scenario": "GUARANTEED",
+  "model": {
+    "timeZone": "America/Argentina/Mendoza",
+    "tzdataVersion": "demo-fixed-2027",
+    "editPeriod": {
+      "start": "2027-02-01",
+      "endExclusive": "2027-02-03"
+    },
+    "visiblePeriod": {
+      "start": "2027-02-01",
+      "endExclusive": "2027-02-03"
+    },
+    "contextPeriod": {
+      "start": "2027-02-01",
+      "endExclusive": "2027-02-03"
+    },
+    "people": [
+      {
+        "id": "demo-A",
+        "role": "EMPLOYEE"
+      }
+    ],
+    "sources": [
+      {
+        "id": "pattern-A",
+        "revisionId": "synth-v1",
+        "kind": "PATTERN"
+      },
+      {
+        "id": "minimum",
+        "revisionId": "synth-v1",
+        "kind": "COVERAGE"
+      },
+      {
+        "id": "gap",
+        "revisionId": "synth-v1",
+        "kind": "LIMIT"
+      }
+    ],
+    "cells": [
+      {
+        "id": "A-mon",
+        "personId": "demo-A",
+        "day": "2027-02-01",
+        "scope": "EDIT",
+        "choices": [
+          {
+            "id": "permitted",
+            "selection": {
+              "kind": "WORK",
+              "blocks": [
+                {
+                  "start": "2027-02-01T22:00:00Z",
+                  "end": "2027-02-02T04:00:00Z",
+                  "support": "NONE"
+                }
+              ]
+            },
+            "sourceIds": [
+              "pattern-A"
+            ],
+            "preferencePenalty": 0
+          }
+        ],
+        "baseline": null,
+        "locks": []
+      },
+      {
+        "id": "A-tue",
+        "personId": "demo-A",
+        "day": "2027-02-02",
+        "scope": "EDIT",
+        "choices": [
+          {
+            "id": "permitted",
+            "selection": {
+              "kind": "WORK",
+              "blocks": [
+                {
+                  "start": "2027-02-02T21:00:00Z",
+                  "end": "2027-02-03T03:00:00Z",
+                  "support": "NONE"
+                }
+              ]
+            },
+            "sourceIds": [
+              "pattern-A"
+            ],
+            "preferencePenalty": 0
+          }
+        ],
+        "baseline": null,
+        "locks": []
+      }
+    ],
+    "bounds": [],
+    "rest": [
+      {
+        "type": "BETWEEN_DUTIES",
+        "ruleId": "gap",
+        "personId": "demo-A",
+        "arrivalDates": {
+          "start": "2027-02-01",
+          "endExclusive": "2027-02-03"
+        },
+        "minMinutes": 600
+      }
+    ],
+    "coverage": [
+      {
+        "ruleId": "minimum",
+        "window": {
+          "start": "2027-02-02T03:00:00Z",
+          "end": "2027-02-02T04:00:00Z"
+        },
+        "eligiblePersonIds": [
+          "demo-A"
+        ],
+        "minEmployees": 1,
+        "minTotal": 1,
+        "idealTotal": 1
+      }
+    ],
+    "history": [],
+    "fairness": [],
+    "candidateDomainComplete": true,
+    "boundaryComplete": true
+  },
+  "options": {
+    "profiles": [
+      "BALANCED"
+    ],
+    "timeLimitMs": 1000,
+    "seed": 1,
+    "threads": 1,
+    "minMaterialMinutes": 60,
+    "fairnessToleranceUnits": [
+      0,
+      0,
+      0
+    ],
+    "maxProposals": 1
+  }
+}

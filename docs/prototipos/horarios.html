@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>Horarios · Maqueta de heladería</title>
+<style>
+:root {
+  color-scheme:light;
+  --ink:#1c302f;
+  --muted:#425955;
+  --green:#11574e;
+  --pale:#e5f0eb;
+  --line:#c9d4d0;
+  --paper:#fcfcf8;
+  --soft:#f2f4ef;
+  --amber:#61430d;
+  --sand:#fbefd1;
+  --dark:#1c3632;
+}
+* {
+  box-sizing:border-box;
+}
+body {
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:16px/1.5 "Segoe UI",Inter,Arial,sans-serif;
+}
+a {
+  color:var(--green);
+}
+a,button,input,select {
+  touch-action:manipulation;
+}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible {
+  outline:3px solid #a2460a;
+  outline-offset:3px;
+}
+h1:focus {
+  outline:none;
+}
+main {
+  max-width:1440px;
+  margin:0 auto;
+  padding:26px clamp(14px,4vw,58px) 48px;
+}
+header {
+  background:var(--dark);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  padding:0 clamp(14px,4vw,58px);
+}
+header b {
+  font-size:1.15rem;
+  letter-spacing:.02em;
+}
+nav {
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+}
+header nav a {
+  color:#e3eee9;
+  text-decoration:none;
+  padding:16px 13px;
+  border-bottom:3px solid transparent;
+}
+header nav a[aria-current] {
+  border-color:#96d5ba;
+  color:white;
+  font-weight:700;
+}
+.demobar {
+  color:#684710;
+  background:var(--sand);
+  padding:6px clamp(14px,4vw,58px);
+  font-size:.88rem;
+  border-bottom:1px solid #d4c49f;
+}
+h1,h2,h3,p {
+  margin:0;
+}
+h1 {
+  font-size:clamp(1.7rem,3.4vw,2.7rem);
+  font-weight:640;
+  letter-spacing:-.045em;
+  line-height:1.18;
+  margin:.1em 0;
+}
+h2 {
+  font-size:1.28rem;
+  letter-spacing:-.018em;
+}
+h3 {
+  font-size:1.09rem;
+}
+p+p {
+  margin-top:.6em;
+}
+.eyebrow {
+  font-size:.85rem;
+  color:var(--muted);
+}
+.hero,.toolbar,.actions {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.hero {
+  justify-content:space-between;
+  margin-bottom:18px;
+}
+.toolbar {
+  padding:13px 0;
+  justify-content:space-between;
+}
+.actions {
+  margin:14px 0;
+}
+.toolbar .actions,.hero .actions {
+  margin:0;
+}
+.button,button {
+  background:white;
+  border:1px solid #839992;
+  color:var(--ink);
+  border-radius:6px;
+  font:inherit;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 13px;
+  cursor:pointer;
+  min-height:40px;
+  font-weight:570;
+}
+.button:hover,button:hover {
+  background:var(--soft);
+}
+.primary,.primary:hover {
+  background:var(--green);
+  color:white;
+  border-color:var(--green);
+}
+.button.selected {
+  background:var(--pale);
+  border-color:var(--green);
+  color:var(--green);
+}
+.back {
+  display:inline-block;
+  margin-bottom:12px;
+}
+.views {
+  display:flex;
+  gap:2px;
+  padding:3px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+.views a {
+  border:1px solid transparent;
+  background:transparent;
+  min-height:36px;
+  padding:5px 14px;
+}
+.views .selected {
+  border-color:#8eaaa0;
+  background:white;
+}
+.state {
+  font-size:.87rem;
+  display:inline-block;
+  font-weight:650;
+  padding:3px 9px;
+  border:1px solid #9ab0a7;
+  background:var(--pale);
+  color:var(--green);
+  border-radius:30px;
+  white-space:nowrap;
+}
+.pending {
+  color:var(--amber);
+  background:var(--sand);
+  border-color:#d7c398;
+}
+.scroll {
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:white;
+}
+.scroll:focus-visible {
+  outline:3px solid #a2460a;
+}
+table {
+  border-collapse:separate;
+  border-spacing:0;
+  width:100%;
+}
+caption {
+  text-align:left;
+  padding:12px 14px;
+  font-weight:650;
+}
+td,th {
+  padding:9px 12px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  vertical-align:top;
+}
+thead th {
+  background:var(--soft);
+  color:var(--muted);
+  font-size:.93rem;
+}
+tr:last-child td,tr:last-child th {
+  border-bottom:0;
+}
+.week {
+  min-width:950px;
+  table-layout:fixed;
+}
+.week th:first-child {
+  width:117px;
+}
+.week .grouprow th {
+  background:#eaf0eb;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  padding:5px 10px;
+}
+.week td {
+  border-left:1px solid #d6ddda;
+  padding:0;
+  height:68px;
+}
+.week tr th {
+  vertical-align:middle;
+}
+.week a.cell {
+  height:100%;
+  width:100%;
+  display:block;
+  padding:12px 8px;
+  color:inherit;
+  text-decoration:none;
+  font-variant-numeric:tabular-nums;
+  font-size:.91rem;
+  line-height:1.55;
+}
+.week a.cell:hover {
+  background:#eaf3ec;
+}
+.week a:focus-visible {
+  outline-offset:-3px;
+}
+.week td.off {
+  background:#edf3e9;
+  color:#264b2c;
+}
+.week td.owner {
+  background:#f8f9f6;
+  color:var(--muted);
+}
+small,.muted,.help {
+  color:var(--muted);
+}
+.help {
+  font-size:.93rem;
+}
+.note {
+  border-left:4px solid #80a59b;
+  background:var(--soft);
+  padding:12px 15px;
+  margin:12px 0;
+  max-width:85ch;
+}
+.warn {
+  border-color:#ad731b;
+  background:#fbf1db;
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,275px),1fr));
+  gap:14px;
+  margin:14px 0;
+}
+.panel,fieldset {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:18px;
+  margin:12px 0;
+}
+.panel h2,.panel h3,fieldset legend {
+  margin-bottom:7px;
+}
+.grid>.panel {
+  margin:0;
+}
+.form {
+  max-width:760px;
+}
+.form label {
+  display:block;
+  margin:10px 0;
+  font-weight:580;
+}
+.form label input,.form label select {
+  margin:4px 0 0;
+  display:block;
+}
+.form input,.form select,select {
+  font:inherit;
+  padding:7px;
+  border:1px solid #849a94;
+  border-radius:5px;
+  background:white;
+  color:var(--ink);
+  max-width:100%;
+}
+.form .fields {
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.form input[type=checkbox] {
+  display:inline;
+  width:auto;
+}
+.form fieldset {
+  min-width:0;
+}
+.form label.check {
+  font-weight:400;
+}
+details {
+  margin:14px 0;
+}
+summary {
+  font-weight:600;
+  cursor:pointer;
+}
+ul,ol {
+  padding-left:1.4rem;
+}
+.daychart {
+  min-width:720px;
+  padding:10px 16px 14px;
+}
+.lanerow {
+  display:grid;
+  grid-template-columns:100px 1fr;
+  align-items:center;
+  gap:12px;
+  margin:10px 0;
+}
+.lane {
+  position:relative;
+  height:36px;
+  background:repeating-linear-gradient(to right,#f3f6f3 0, #f3f6f3 calc(7.6923% - 1px),#ced9d2 calc(7.6923% - 1px),#ced9d2 7.6923%);
+  border-bottom:1px solid var(--line);
+}
+.band {
+  position:absolute;
+  top:3px;
+  background:#c5ded0;
+  color:#173a2c;
+  border:1px solid #91b9a4;
+  height:29px;
+  padding:1px 4px;
+  border-radius:3px;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.ticks {
+  display:flex;
+  justify-content:space-between;
+  font-size:.84rem;
+  color:var(--muted);
+}
+.month {
+  table-layout:fixed;
+  min-width:680px;
+}
+.month td {
+  border-right:1px solid var(--line);
+  height:62px;
+}
+.month td span {
+  display:block;
+  font-size:.83rem;
+}
+.month td.off {
+  background:var(--pale);
+}
+.section {
+  margin:24px 0 10px;
+}
+.options {
+  margin:8px 0 0;
+}
+.slim {
+  max-width:900px;
+}
+.error {
+  color:#832b22;
+  font-weight:620;
+}
+.skip {
+  position:absolute;
+  left:-9999px;
+}
+.skip:focus {
+  left:8px;
+  top:8px;
+  padding:8px;
+  background:white;
+  z-index:5;
+}
+.startday {
+  font-weight:600;
+}
+.jsnotice {
+  padding:20px;
+}
+.hide {
+  display:none;
+}
+@media(max-width:640px) {
+  main {
+    padding:16px 12px;
+  }
+  header {
+    padding:7px 12px 0;
+  }
+  header nav a {
+    padding:8px 7px;
+  }
+  .hero {
+    align-items:flex-start;
+  }
+  .toolbar {
+    align-items:flex-start;
+  }
+  .panel {
+    padding:13px;
+  }
+}
+@media(forced-colors:active) {
+  .band,.state {
+    border:1px solid CanvasText;
+  }
+  a[aria-current] {
+    outline:2px solid LinkText;
+  }
+}
+</style></head><body>
+<a class="skip" href="#contenido" id="saltar">Saltar al contenido</a>
+<header><b>Horarios de la heladería</b><nav aria-label="Áreas principales" id="nav"></nav></header>
+<div class="demobar"><strong>Demostración</strong> · Personas y horarios ficticios. Los cambios se descartan al recargar.</div>
+<main id="contenido" tabindex="-1"></main>
+<noscript><p class="jsnotice">Activá JavaScript local para recorrer la maqueta o abrí el documento 10_UX_UI.md para leer los flujos.</p></noscript>
+<script>
+'use strict';
+
+const main = document.getElementById('contenido');
+const names = ['Alma', 'Bruno', 'Celia', 'Leo'];
+const weekdays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const shortDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const split = '12:00–16:00|18:00–20:00';
+const standard = [[split, 'Franco fijo', split, split, '12:00–19:00', split, 'Franco rotativo'], ['15:00–21:00', '15:00–21:00', '15:00–21:00', '15:00–21:00', 'Franco rotativo', '15:00–21:00', '15:00–21:00'], ['19:00–01:00 (+1 día)', '18:00–00:00 (+1 día)', 'Franco rotativo', '19:00–01:00 (+1 día)', '19:00–01:00 (+1 día)', '19:00–01:00 (+1 día)', '19:00–01:00 (+1 día)'], Array(7).fill('Sin asignar')];
+const fresh = () => standard.map(row => row.slice());
+let confirmed = fresh(),
+  draft = null,
+  revision = 1,
+  request = false,
+  planType = '',
+  notice = '',
+  manual = false,
+  weekOffset = 0,
+  settingsReviewed = false,
+  commitment = false,
+  locks = new Set(),
+  draftLocks = null,
+  undo = null;
+let selectedDay = 0,
+  selectedPerson = 0;
+const b = (label, path, kind = '') => '<a class="button ' + kind + '" href="#' + path + '">' + label + '</a>';
+const btn = (label, act, kind = '') => '<button type="button" class="' + kind + '" data-act="' + act + '">' + label + '</button>';
+const link = (label, path) => '<a href="#' + path + '">' + label + '</a>';
+const back = (label, path) => '<a href="#' + path + '" class="back">‹ ' + label + '</a>';
+const note = (s, w = false) => '<div class="note' + (w ? ' warn' : '') + '">' + s + '</div>';
+const state = () => draft ? '<span class="state pending">Borrador · base ' + revision + '</span>' : '<span class="state">Confirmado · revisión ' + revision + '</span>';
+const hero = (context, title, actions = '') => '<div class="hero"><div><p class="eyebrow">' + context + '</p><h1 tabindex="-1">' + title + '</h1></div><div class="actions">' + actions + '</div></div>';
+const act = (...parts) => '<div class="actions">' + parts.join('') + '</div>';
+const table = (heads, rows, caption = '') => '<div class="scroll" tabindex="0"><table>' + (caption ? '<caption>' + caption + '</caption>' : '') + '<thead><tr>' + heads.map(h => '<th scope="col">' + h + '</th>').join('') + '</tr></thead><tbody>' + rows.map(r => '<tr>' + r.map((x, i) => i ? '<td>' + x + '</td>' : '<th scope="row">' + x + '</th>').join('') + '</tr>').join('') + '</tbody></table></div>';
+const navTo = path => {
+  if (location.hash === '#' + path) render();else location.hash = path;
+};
+const isSafeInt = (x, min, max) => Number.isInteger(x) && x >= min && x <= max;
+const narg = (str, min, max, def) => {
+  const n = Number(str);
+  return isSafeInt(n, min, max) ? n : def;
+};
+const display = value => value.split('|').join('<br>');
+const current = () => draft || confirmed;
+const key = (p, d) => p + '-' + d;
+const dataLocks = () => draftLocks || locks;
+function beginDraft(type) {
+  draft = current().map(row => row.slice());
+  draftLocks = new Set(dataLocks());
+  planType = type;
+  manual = false;
+  weekOffset = 0;
+  undo = null;
+}
+function choose(type) {
+  beginDraft(type);
+  draft = fresh();
+  draftLocks = new Set();
+  if (type === 'cobertura') {
+    draft[0][4] = 'Franco rotativo';
+    draft[0][6] = '15:00–21:00';
+    draft[1][4] = '12:00–19:00';
+    draft[1][6] = 'Franco rotativo';
+    draft[1][0] = '15:00–22:00';
+  }
+  if (type === 'reparacion') {
+    draft = confirmed.map(row => row.slice());
+    draft[1][3] = 'Ausencia';
+    draft[0][3] = '12:00–19:00';
+  }
+}
+function frozenChanges(matrix) {
+  for (const id of locks) {
+    const [p, d] = id.split('-').map(Number);
+    if (matrix[p][d] !== confirmed[p][d]) return true;
+  }
+  return false;
+}
+function copyGrid() {
+  return current().map(row => row.slice());
+}
+function views(on) {
+  return '<nav class="views" aria-label="Vista de horarios">' + [['semana', 'Semana'], ['dia', 'Día'], ['mes', 'Mes']].map(([path, label]) => b(label, path, on === path ? 'selected' : '')).join('') + '</nav>';
+}
+function dateAt(i) {
+  return new Date(Date.UTC(2030, 3, 1 + i));
+}
+function fmt(i) {
+  return dateAt(i).toLocaleDateString('es-AR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC'
+  });
+}
+function week() {
+  const offset = weekOffset * 7,
+    inSample = weekOffset === 0;
+  let html = hero('Horarios · Semana', 'Del ' + dateAt(offset).getUTCDate() + ' al ' + fmt(offset + 6), inSample ? state() : '<span class="state pending">Sin cargar</span>');
+  html += '<div class="toolbar">' + views('semana') + act(btn('‹ Anterior', 'prev'), btn('Semana del ejemplo', 'homeweek'), btn('Siguiente ›', 'next')) + '</div>';
+  if (!inSample) return html + note('Esta semana no tiene datos de muestra. Volvé a la semana del 1 de abril para recorrer los ejemplos.');
+  html += act(b('Generar horarios', 'generar', 'primary'), b('Resolver un cambio', 'reparar'), draft ? b('Revisar y confirmar', 'confirmar') : b('Exportar horario', 'compartir'));
+  if (notice) html += note(notice);
+  let rows = '';
+  for (let p = 0; p < 4; p++) {
+    if (p === 0 || p === 3) rows += '<tr class="grouprow"><th colspan="8" scope="colgroup">' + (p === 0 ? 'Empleados' : 'Propietarios') + '</th></tr>';
+    rows += '<tr><th scope="row">' + names[p] + '</th>' + current()[p].map((v, d) => '<td class="' + (p === 3 ? 'owner' : v.startsWith('Franco') ? 'off' : '') + '"><a class="cell" href="#celda/' + p + '/' + d + '" aria-label="' + names[p] + ', ' + weekdays[d] + ' ' + (d + 1) + ', ' + v.replace('|', ', ') + (dataLocks().has(key(p, d)) ? ', fijado' : '') + '">' + display(v) + (dataLocks().has(key(p, d)) ? '<br><strong>Fijado</strong>' : '') + '</a></td>').join('') + '</tr>';
+  }
+  html += '<div class="scroll" tabindex="0" aria-label="Horario semanal"><table class="week"><thead><tr><th scope="col">Persona</th>' + shortDays.map((day, i) => '<th scope="col">' + day + ' ' + (i + 1) + '</th>').join('') + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+  html += '<div class="toolbar"><p class="help">Elegí una casilla para ver o editar su detalle.</p>' + act(draft && undo ? btn('Deshacer edición', 'undo') : '', draft ? b('Descartar borrador', 'descartar') : '', b('Ver revisiones', 'historial')) + '</div>';
+  return html;
+}
+function cell(p, d) {
+  selectedPerson = p;
+  selectedDay = d;
+  let value = current()[p][d];
+  return back('Semana', 'semana') + hero('Detalle de jornada', names[p] + ' · ' + weekdays[d].toLowerCase() + ' ' + (d + 1), state()) + '<section class="panel slim"><h2>' + display(value) + '</h2>' + (value.includes('+1') ? '<p>El cierre ocurre el ' + weekdays[(d + 1) % 7].toLowerCase() + '. Todas las horas de esta jornada se asignan al ' + weekdays[d].toLowerCase() + '.</p>' : '') + (value.includes('|') ? '<p>6 horas de trabajo. Pausa entre las 16:00 y las 18:00.</p>' : '') + '<p>' + (dataLocks().has(key(p, d)) ? 'Asignación fijada.' : 'Asignación sin fijar.') + '</p></section>' + act(b('Ver el día', 'dia'), b(draft ? 'Editar borrador' : 'Crear revisión para editar', 'editar/' + p + '/' + d), b('Registrar solicitud', 'solicitudes'), b(dataLocks().has(key(p, d)) ? 'Revisar desbloqueo' : 'Fijar asignación', 'fijar/' + p + '/' + d));
+}
+function editCell(p, d) {
+  let v = current()[p][d];
+  let options = [v, ...(p === 3 ? ['Sin asignar'] : ['Sin asignar', 'Franco rotativo', 'Ausencia', '12:00–19:00'])];
+  return back('Volver al detalle', 'celda/' + p + '/' + d) + hero('Edición manual', names[p] + ' · ' + weekdays[d].toLowerCase()) + (dataLocks().has(key(p, d)) ? note('La asignación está fijada. Revisá el bloqueo antes de editarla.', true) + b('Ver bloqueo', 'fijar/' + p + '/' + d) : '<div class="form panel"><label>Asignación de ejemplo<select id="newval">' + [...new Set(options)].map(v => '<option>' + v.replace('|', ' / ') + '</option>').join('') + '</select></label>' + note('Este editor ensaya el guardado de una celda. Los cambios manuales quedan en un borrador pendiente de validación.') + act(btn('Aplicar al borrador', 'edit-' + p + '-' + d, 'primary'), b('Cancelar', 'celda/' + p + '/' + d)) + '</div>');
+}
+function lockPage(p, d) {
+  let locked = dataLocks().has(key(p, d));
+  return back('Volver al detalle', 'celda/' + p + '/' + d) + hero('Protección de la asignación', (locked ? 'Desfijar' : 'Fijar') + ' · ' + names[p]) + '<p>' + weekdays[d] + ' ' + (d + 1) + ' de abril · ' + display(current()[p][d]) + '</p>' + note(locked ? 'Una futura propuesta podrá cambiar esta asignación.' : 'Al preparar propuestas, esta persona deberá conservar esta asignación.') + act(btn(locked ? 'Desfijar en borrador' : 'Fijar en borrador', 'lock-' + p + '-' + d, 'primary'), b('Cancelar', 'celda/' + p + '/' + d));
+}
+function parts(value) {
+  if (!/^[0-9]/.test(value)) return [];
+  return value.split('|').map(s => {
+    let [a, c] = s.split('–');
+    const minute = t => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
+    return [minute(a), minute(c) + (c.includes('(+1') ? 1440 : 0)];
+  });
+}
+function clock(m) {
+  let n = m % 1440;
+  return String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0') + (m >= 1440 ? ' (+1 día)' : '');
+}
+const openTimes = [[720, 1500], [900, 1440], [720, 1260], [720, 1500], [720, 1500], [720, 1500], [900, 1500]];
+function day() {
+  let d = selectedDay;
+  const [start, end] = openTimes[d],
+    ranges = current().map(row => parts(row[d]));
+  let cuts = new Set([start, end, ...(end > 1440 ? [1440] : []), ...(d === 0 ? [900, 960, 1260, 1320] : [])]);
+  ranges.flat().forEach(([a, c]) => {
+    if (a > start && a < end) cuts.add(a);
+    if (c > start && c < end) cuts.add(c);
+  });
+  const ticks = [...cuts].sort((a, c) => a - c),
+    coverage = [];
+  for (let i = 0; i < ticks.length - 1; i++) {
+    let a = ticks[i],
+      c = ticks[i + 1],
+      present = ranges.map((arr, p) => arr.some(([s, e]) => s <= a && e >= c) ? p : -1).filter(p => p !== -1),
+      employees = present.filter(p => p !== 3),
+      required = d === 0 && (a >= 900 && a < 960 || a >= 1260 && a < 1320) ? 2 : 1;
+    coverage.push([clock(a) + ' – ' + clock(c), employees.map(p => names[p]).join(', ') || 'Nadie', String(present.length - employees.length), '1 / ' + required, employees.length === 0 ? 'Falta 1 para el mínimo' : employees.length < required ? 'Falta 1 para el ideal' : 'Cubierto']);
+  }
+  let lanes = ranges.map((arr, p) => '<div class="lanerow"><strong>' + names[p] + '</strong><div class="lane">' + arr.map(([s, e]) => {
+    let a = Math.max(s, start),
+      c = Math.min(e, end);
+    return c > a ? '<span class="band" style="left:' + (a - start) / (end - start) * 100 + '%;width:' + (c - a) / (end - start) * 100 + '%" title="' + clock(s) + ' – ' + clock(e) + '">' + clock(s).slice(0, 5) + '–' + clock(e).slice(0, 5) + '</span>' : '';
+  }).join('') + '</div></div>').join('');
+  let prev = d > 0 ? current().map((row, p) => parts(row[d - 1]).some(([, end]) => end > 1440) ? names[p] : '').filter(Boolean) : [];
+  return hero('Horarios · Día', weekdays[d] + ' ' + (d + 1) + ' de abril', state()) + '<div class="toolbar">' + views('dia') + '<label>Fecha operativa <select id="dia-sel">' + weekdays.map((w, i) => '<option value="' + i + '" ' + (d === i ? 'selected' : '') + '>' + w + ' ' + (i + 1) + '</option>').join('') + '</select></label></div>' + '<p class="help">Desde la apertura hasta el cierre.' + (end >= 1440 ? ' La salida corresponde al ' + weekdays[(d + 1) % 7].toLowerCase() + ' ' + (d + 2) + ' de abril.' : '') + '</p><div class="scroll" tabindex="0"><div class="daychart"><div class="lanerow"><b>Persona</b><div class="ticks"><b>' + clock(start) + '</b><b>' + clock(Math.floor((start + end) / 2)) + '</b><b>' + clock(end) + '</b></div></div>' + lanes + '</div></div>' + (prev.length ? note('Antes de abrir, de 00:00 a 01:00 estuvo ' + prev.join(', ') + ' por el cierre del ' + weekdays[d - 1].toLowerCase() + '.') : d === 0 ? '<p class="help">La maqueta empieza con la apertura del lunes y no incluye el domingo anterior.</p>' : '') + '<h2 class="section">Cobertura por franja</h2>' + table(['Hora real', 'Empleados presentes', 'Jefes comprometidos presentes', 'Mínimo / ideal total', 'Cobertura'], coverage);
+}
+function month() {
+  let p = selectedPerson;
+  let cells = '';
+  for (let i = 1; i <= 35; i++) {
+    if ((i - 1) % 7 === 0) cells += '<tr>';
+    let v = i < 8 ? current()[p][i - 1] : '';
+    let text = v ? parts(v).length ? 'Trabaja' : v : 'Sin cargar';
+    cells += i > 30 ? '<td></td>' : '<td class="' + (v.startsWith('Franco') ? 'off' : '') + '"><strong>' + (i < 8 ? link(String(i), 'celda/' + p + '/' + (i - 1)) : i) + '</strong><span>' + text + '</span></td>';
+    if (i % 7 === 0) cells += '</tr>';
+  }
+  return hero('Horarios · Francos por persona', 'Abril de 2030', state()) + '<div class="toolbar">' + views('mes') + '<label>Persona <select id="mes-per">' + names.map((n, i) => '<option value="' + i + '" ' + (i === p ? 'selected' : '') + '>' + n + '</option>').join('') + '</select></label></div><div class="scroll" tabindex="0"><table class="month"><thead><tr>' + shortDays.map(d => '<th scope="col">' + d + '</th>').join('') + '</tr></thead><tbody>' + cells + '</tbody></table></div>' + note('Solo hay horarios de muestra del 1 al 7. Las fechas pendientes no cuentan como francos. ' + (p === 3 ? 'El propietario sin asignar no participa de la rotación del ejemplo.' : 'El franco fijo y el rotativo se mantienen separados.'));
+}
+function people() {
+  return hero('Personal', 'Personas del local') + table(['Nombre', 'Rol', 'Jornada de ejemplo', 'Ficha'], names.map((n, i) => [n, i === 3 ? 'Propietario' : 'Empleado', ['Partida o continua', 'Variable', 'Cierre', 'Apoyo disponible'][i], link('Abrir ficha de ' + n, 'persona/' + i)]));
+}
+function person(p) {
+  return back('Personal', 'personal') + hero(p === 3 ? 'Personal · Propietario' : 'Personal · Empleado', names[p]) + '<div class="form panel"><h2>Condiciones del ejemplo</h2>' + (p === 3 ? '<p>Disponible para consultar. No cuenta como presencia garantizada.</p><details><summary>Compromisos y límites</summary><p>Un compromiso debe identificar fechas, intervalos y límites aceptados. Las horas eventuales quedan fuera del mínimo.</p></details>' : '<p>Franco rotativo: uno por semana.</p><p>Franco fijo: ' + (p === 0 ? 'martes, adicional al rotativo' : 'ninguno en este ejemplo') + '.</p><p>Vigencia de la ficha de muestra: 1 a 7 de abril de 2030.</p><details><summary>Patrones autorizados y disponibilidad</summary><p>' + ['Alma puede tener una jornada partida de 6 horas o una continua, según el día.', 'Bruno tiene franjas de 6 o 7 horas según día y alternativa.', 'Celia puede cerrar al día siguiente; el martes conserva su jornada completa.'][p] + '</p></details>') + act(p === 0 ? b('Editar jornada partida', 'partida', 'primary') : '', b('Revisar cambio de vigencia', 'vigencia/' + p)) + '</div>';
+}
+function validity(p) {
+  return back('Ficha de ' + names[p], 'persona/' + p) + hero('Cambio de condiciones', names[p] + ' · Vigencia') + '<div class="panel form"><label>Nueva vigencia desde<input type="date" id="vig-fecha" value="2030-04-15"></label><p class="help">Ejemplo de un cambio futuro de disponibilidad.</p>' + act(btn('Previsualizar impacto', 'vigencia', 'primary')) + '<p id="vig-msg" role="status"></p></div>';
+}
+function blockForm() {
+  return back('Ficha de Alma', 'persona/0') + hero('Personal · Patrón de Alma', 'Jornada partida') + '<div class="form"><p>Editá los dos bloques del mismo día operativo para revisar horas de trabajo y pausa.</p>' + [0, 1].map(i => '<fieldset><legend>Bloque ' + (i + 1) + '</legend><div class="fields"><label>Inicio<input id="s' + i + '" type="time" value="' + (i ? '18:00' : '12:00') + '"></label><label>Fin<input id="e' + i + '" type="time" value="' + (i ? '20:00' : '16:00') + '"></label></div><label class="check"><input id="n' + i + '" type="checkbox"> El fin cae al día siguiente</label></fieldset>').join('') + '<p id="bloque-msg" role="status" tabindex="-1">6 h de trabajo · 2 h de pausa.</p>' + act(btn('Revisar patrón', 'patron', 'primary'), b('Volver a la ficha', 'persona/0')) + '</div>';
+}
+function requests() {
+  return hero('Solicitudes', 'Solicitudes y excepciones', b('Nueva solicitud', 'solicitud', 'primary')) + (request ? table(['Persona', 'Fecha', 'Tipo', 'Estado'], [['Bruno', 'Jueves 4 de abril, 15:00–21:00', 'Ausencia, obligatoria', current()[1][3] === 'Ausencia' ? 'Incluida en el horario visible' : link('Revisar impacto', 'reparar')]]) : note('Todavía no cargaste solicitudes en esta demostración.'));
+}
+function requestForm() {
+  return back('Solicitudes', 'solicitudes') + hero('Solicitud de ejemplo', 'Bruno · Jueves 4 de abril') + '<div class="panel form"><label>Qué ocurrió<select id="reqtype"><option value="ausencia">No puede trabajar de 15:00 a 21:00</option><option value="preferencia">Preferiría tener franco</option><option value="civil">Necesita el día calendario completo libre</option></select></label><p id="req-info" role="status">La ausencia es obligatoria y se descuenta de la disponibilidad real.</p>' + act(btn('Registrar ausencia del ejemplo', 'registrar', 'primary'), b('Cancelar', 'solicitudes')) + '<p class="help">La simulación de reparación usa la primera opción. Las otras dos muestran cómo cambia el alcance.</p></div>';
+}
+function generate() {
+  return back('Semana', 'semana') + hero('Preparar un borrador', 'Generar horarios') + '<div class="panel slim"><h2>Del lunes 1 al domingo 7 de abril</h2><p>Se comparan distribuciones de francos sobre la semana ficticia. La revisión ' + revision + ' sigue disponible.</p>' + act(b('Ver propuestas de ejemplo', 'propuestas', 'primary'), b('Cancelar', 'semana')) + '<details><summary>Probar otras salidas de la búsqueda</summary>' + act(b('Se agotó el tiempo', 'resultado/tiempo'), b('Falta personal', 'resultado/falta'), b('Apoyo por consultar', 'resultado/apoyo'), b('Motor fuera de servicio', 'resultado/motor')) + '</details></div>';
+}
+function proposals() {
+  return back('Generar horarios', 'generar') + hero('Del 1 al 7 de abril', 'Comparar propuestas') + table(['Qué cambiaría', 'Equilibrada', 'Mejor cobertura ideal'], [['Franco rotativo de Alma', 'Domingo 7', 'Viernes 5'], ['Franco rotativo de Bruno', 'Viernes 5', 'Domingo 7'], ['Lunes, 21:00–22:00', 'Solo Celia. Cumple el mínimo de 1.', 'Bruno y Celia. Cumple el ideal de 2.'], ['Apoyo de propietarios', '0 horas', '0 horas'], ['Selección', btn('Elegir equilibrada', 'choose-equilibrada', 'primary'), btn('Elegir mejor cobertura', 'choose-cobertura')]]) + note('Al elegir, se abre un borrador. Las distribuciones son ejemplos preparados para comparar, sin cálculo automático.');
+}
+function result(type) {
+  const cases = {
+    tiempo: ['Terminó el tiempo de búsqueda', 'Todavía no encontramos un horario. Podés reintentar o editar el borrador a mano.', b('Volver a intentar', 'generar')],
+    falta: ['Falta personal', 'Ejemplo independiente: el jueves de 16:00 a 18:00 se requiere una persona. Nadie está habilitado en esa franja.', b('Revisar personal', 'personal')],
+    apoyo: ['El apoyo necesita confirmación', 'Ejemplo independiente: Leo podría cubrir el jueves de 18:00 a 19:00. Consultale antes de registrar un compromiso.', btn('Registrar compromiso de ejemplo', 'commitment')],
+    motor: ['El generador no está disponible', 'Podés abrir el horario confirmado o preparar una revisión manual.', b('Abrir semana', 'semana')]
+  };
+  let [title, body, action] = Object.prototype.hasOwnProperty.call(cases, type) ? cases[type] : cases.tiempo;
+  return back('Generar horarios', 'generar') + hero('Resultado de ejemplo', title) + note(body, true) + act(action, b('Volver a horarios', 'semana')) + (commitment && type === 'apoyo' ? note('Compromiso de ejemplo registrado para el jueves de 18:00 a 19:00. Habría que recalcular y validar antes de confirmar.') : '');
+}
+function repair() {
+  return back('Semana', 'semana') + hero('Horarios · Resolver un cambio', 'Ausencia del jueves 4') + '<div class="panel slim"><h2>Bruno · 15:00–21:00</h2><p>Revisión de origen: ' + revision + '. El alcance editable se limita al jueves 4 de abril. El resto de la semana queda protegido.</p>' + (confirmed[1][3] === 'Ausencia' ? note('Esta ausencia ya está incorporada en la revisión confirmada.') : (request ? '<p>La ausencia ya está registrada.</p>' : '<p>La ausencia todavía no está registrada.</p>') + act(request ? b('Ver cambios propuestos', 'comparar', 'primary') : btn('Registrar ausencia y revisar', 'reqrepair', 'primary'))) + act(b('Volver sin modificar el horario', 'semana')) + '</div>';
+}
+function diffTable() {
+  return table(['Persona', 'Antes, jueves 4', 'Después', 'Por qué'], [['Bruno', display(confirmed[1][3]), 'Ausencia', 'No puede trabajar.'], ['Alma', display(confirmed[0][3]), '12:00–19:00', 'Cubre el hueco de 16:00 a 18:00 y entrega el cierre a Celia.']]);
+}
+function compare() {
+  return back('Detalle del imprevisto', 'reparar') + hero('Jueves 4 de abril · Revisión ' + revision, 'Revisar los cambios') + diffTable() + note('Dos personas cambian el jueves. Celia conserva el cierre. Los otros días mantienen sus asignaciones.') + act(btn('Preparar revisión', 'choose-reparacion', 'primary'), b('Cancelar reparación', 'semana'));
+}
+function confirmPage() {
+  return back('Borrador semanal', 'semana') + hero('Del 1 al 7 de abril', 'Revisar y confirmar') + (!draft ? note('La semana visible ya está confirmada.') : manual ? note('Este borrador manual queda pendiente del validador de la aplicación. La maqueta permite confirmar las propuestas preparadas.', true) : frozenChanges(draft) ? note('Una asignación fijada coincide con un cambio. Volvé al detalle para resolverlo.', true) : request && draft[1][3] !== 'Ausencia' ? note('Bruno tiene una ausencia registrada el jueves. Resolvé el cambio antes de confirmar.', true) + b('Resolver un cambio', 'reparar') : '<p>Vas a confirmar una revisión nueva de la semana. La anterior queda en el historial de la sesión.</p>' + (planType === 'reparacion' ? diffTable() : note(planType === 'cobertura' ? 'Alma libra el viernes y Bruno el domingo. El lunes ambos turnos de cierre se superponen hasta las 22:00.' : 'Alma libra el domingo y Bruno el viernes. El lunes, Celia cubre sola de 21:00 a 22:00.')) + act(btn('Confirmar revisión ' + (revision + 1), 'confirm', 'primary'), b('Seguir revisando', 'semana')));
+}
+function settings() {
+  return hero('Configuración', 'Reglas del local') + '<div class="grid">' + '<section class="panel"><h2>Apertura y cobertura</h2><p>Plantillas de la semana, feriados y reglas por fecha.</p>' + act(b('Ver reglas del ejemplo', 'reglas')) + '</section>' + '<section class="panel"><h2>Francos y descansos</h2><p>Ver cuándo se considera disfrutado un fin de semana.</p>' + act(b('Ver política del ejemplo', 'politica')) + '</section>' + '<section class="panel"><h2>Archivos y copias</h2><p>Compartir horarios, llevar la configuración o recuperar una copia completa.</p>' + act(b('Elegir operación', 'archivos')) + '</section></div>';
+}
+function rules() {
+  return back('Configuración', 'configuracion') + hero('Configuración · Desde el 1 de abril', 'Horarios y cobertura') + table(['Día', 'Abre', 'Cierra', 'Mínimo total del ejemplo'], openTimes.map(([s, e], i) => [weekdays[i], clock(s), clock(e), '1 persona'])) + '<p class="help">El lunes se buscan dos personas de 15:00 a 16:00 y de 21:00 a 22:00. El resto del tiempo, el ideal es uno.</p><details><summary>Excepciones de fecha</summary><p>Ejemplo independiente: una excepción del 15 de abril señala cierre a las 20:00. Prevalece sobre el horario semanal de ese día. Las reglas de descanso siguen vigentes.</p></details>' + act(btn('Previsualizar cambio desde el 15', 'settings', 'primary')) + (settingsReviewed ? note('La excepción empezaría el 15 de abril. Las revisiones de la semana del 1 al 7 conservan sus condiciones.') : '');
+}
+function policy() {
+  return back('Configuración', 'configuracion') + hero('Política ficticia', 'Francos y descansos') + note('En este ejemplo, un sábado o domingo con franco rotativo cuenta para ese fin de semana. Dos francos del mismo fin de semana cuentan una vez.') + '<p>El fijo del martes de Alma se cuenta aparte. El descanso real se comprueba desde la última salida efectiva hasta el siguiente ingreso.</p>' + act(b('Revisar abril', 'mes'));
+}
+function files() {
+  return back('Configuración', 'configuracion') + hero('Configuración', 'Archivos y copias') + '<div class="grid">' + '<section class="panel"><h2>Compartir el horario</h2><p>Una copia para leer o imprimir, con fechas, personas y revisión confirmada.</p>' + act(b('Previsualizar PDF o PNG', 'compartir')) + '</section>' + '<section class="panel"><h2>Llevar configuración</h2><p>Personas, patrones, reglas y feriados en un archivo JSON.</p>' + act(b('Importar configuración', 'importar'), b('Exportar configuración', 'configsalida')) + '</section>' + '<section class="panel"><h2>Recuperar todo</h2><p>Una copia completa contiene también horarios, solicitudes e historial.</p>' + act(b('Crear copia de respaldo', 'copia'), b('Restaurar una copia', 'restaurar')) + '</section></div>';
+}
+function share() {
+  return back('Archivos y copias', 'archivos') + hero('Exportar horario confirmado', 'Semana del 1 al 7 de abril') + '<div class="form panel"><p>Revisión ' + revision + ' · Horario confirmado. Los datos privados de solicitudes quedan fuera de la copia.</p><label>Formato<select id="fmt"><option>PDF para imprimir</option><option>PNG para compartir</option></select></label>' + act(btn('Ver contenido de la exportación', 'preview', 'primary')) + '<div id="export-view" role="status"></div></div>';
+}
+function importConfig() {
+  return back('Archivos y copias', 'archivos') + hero('Importar configuración', 'Revisar antes de aplicar') + '<div class="panel form"><label>Archivo simulado<select id="archivo"><option value="valido">reglas-ejemplo.json</option><option value="invalido">referencia-desconocida.json</option></select></label>' + act(btn('Validar y previsualizar', 'importpreview', 'primary')) + '<div id="file-msg" role="status"></div></div>';
+}
+function fileScreen(type) {
+  const content = {
+    configsalida: ['Exportar configuración', 'Personas, patrones, políticas, feriados y reglas del local. Los horarios, solicitudes e historial se recuperan con una copia completa.', 'Previsualizar archivo', 'Se prepararía un archivo JSON de configuración versionado para guardar en la carpeta elegida.'],
+    copia: ['Crear copia de respaldo', 'Datos del local, horarios confirmados, borradores, solicitudes e historial. Elegí un destino que puedas recuperar si falla este equipo.', 'Revisar el destino', 'En la aplicación se elige el destino y se verifica la copia completa antes de informar que está lista.'],
+    restaurar: ['Restaurar una copia', 'Copia ficticia del 2 de abril de 2030. Revisá qué estado reemplazaría y la copia previa que se ofrecería conservar.', 'Comparar con el estado actual', 'Ejemplo de impacto: volverías a una base con revisión 1. Se requiere una copia previa verificada y confirmación explícita antes de sustituir los datos.']
+  };
+  const [title, body, action, done] = content[type];
+  return back('Archivos y copias', 'archivos') + hero('Operación de archivo · Simulación', title) + '<div class="panel slim"><p>' + body + '</p>' + act(btn(action, 'fileinfo', 'primary'), b('Cancelar', 'archivos')) + '<div id="file-info" hidden class="note">' + done + '</div></div>';
+}
+const versions = [fresh()];
+function history(arg) {
+  if (arg !== undefined) {
+    let idx = narg(arg, 0, versions.length - 1, 0);
+    return back('Revisiones', 'historial') + hero('Semana del 1 al 7 de abril', 'Revisión ' + (idx + 1), idx === revision - 1 ? '<span class="state">Vigente</span>' : '<span class="state pending">Anterior</span>') + table(['Persona', ...shortDays], versions[idx].map((row, i) => [names[i], ...row.map(display)]));
+  }
+  return back('Semana', 'semana') + hero('Horario semanal', 'Revisiones confirmadas') + table(['Revisión', 'Estado', 'Consulta'], versions.map((v, i) => ['Revisión ' + (i + 1), i === revision - 1 ? 'Vigente' : 'Anterior', link('Ver revisión ' + (i + 1), 'historial/' + i)]).reverse());
+}
+const lookup = id => document.getElementById(id);
+const pages = {
+  semana: week,
+  dia: day,
+  mes: month,
+  personal: people,
+  solicitudes: requests,
+  solicitud: requestForm,
+  generar: generate,
+  propuestas: proposals,
+  reparar: repair,
+  comparar: compare,
+  confirmar: confirmPage,
+  partida: blockForm,
+  configuracion: settings,
+  reglas: rules,
+  politica: policy,
+  archivos: files,
+  compartir: share,
+  importar: importConfig,
+  historial: history,
+  descartar: () => back('Semana', 'semana') + hero('Borrador local', 'Descartar los cambios') + note('Al descartar el borrador se vuelve a la revisión confirmada ' + revision + '.') + act(btn('Descartar borrador', 'discard', 'primary'), b('Conservar borrador', 'semana'))
+};
+function render() {
+  const [r = 'semana', a, c] = (location.hash.slice(1) || 'semana').split('/');
+  let p = narg(a, 0, 3, 0),
+    d = narg(c, 0, 6, 0);
+  let body;
+  if (r === 'celda') body = cell(p, d);else if (r === 'editar') body = editCell(p, d);else if (r === 'fijar') body = lockPage(p, d);else if (r === 'persona') body = person(p);else if (r === 'vigencia') body = validity(p);else if (r === 'resultado') body = result(a);else if (['configsalida', 'copia', 'restaurar'].includes(r)) body = fileScreen(r);else body = (Object.prototype.hasOwnProperty.call(pages, r) ? pages[r] : week)(a);
+  const area = ['personal', 'persona', 'partida', 'vigencia'].includes(r) ? 'personal' : ['solicitud', 'solicitudes'].includes(r) ? 'solicitudes' : ['configuracion', 'politica', 'reglas', 'archivos', 'importar', 'configsalida', 'copia', 'restaurar'].includes(r) ? 'configuracion' : 'semana';
+  lookup('nav').innerHTML = [['semana', 'Horarios'], ['personal', 'Personal'], ['solicitudes', 'Solicitudes'], ['configuracion', 'Configuración']].map(([path, label]) => '<a ' + (area === path ? 'aria-current="page"' : '') + ' href="#' + path + '">' + label + '</a>').join('');
+  main.innerHTML = body;
+  const title = main.querySelector('h1');
+  if (title) {
+    document.title = title.textContent + ' · Horarios de muestra';
+    title.focus({
+      preventScroll: true
+    });
+  }
+  window.scrollTo(0, 0);
+}
+function timeInput(id) {
+  let t = lookup(id).value;
+  if (!/^\d\d:\d\d$/.test(t)) return NaN;
+  let [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+function showBlock() {
+  const arr = [0, 1].map(i => [timeInput('s' + i), timeInput('e' + i) + (lookup('n' + i).checked ? 1440 : 0)]),
+    out = lookup('bloque-msg');
+  let error = '';
+  if (arr.some(([s, e]) => !Number.isFinite(s + e))) error = 'Completá la hora de inicio y fin de ambos bloques.';else if (arr.some(([s, e]) => e <= s)) error = 'El fin debe ser posterior al inicio. Revisá la fecha de salida.';else if (arr[1][0] < arr[0][1]) error = 'El segundo bloque empieza antes de que termine el primero. Revisá el inicio del segundo bloque.';
+  out.className = error ? 'error' : '';
+  if (error) {
+    out.textContent = error;
+    out.focus();
+    return;
+  }
+  let duration = arr.reduce((total, [s, e]) => total + e - s, 0);
+  function hm(m) {
+    return Math.floor(m / 60) + ' h ' + m % 60 + ' min';
+  }
+  out.textContent = 'Patrón revisado en la maqueta. Trabajo: ' + hm(duration) + '. Pausa: ' + hm(arr[1][0] - arr[0][1]) + '.';
+  out.focus();
+}
+function confirmDemo() {
+  if (!draft || manual || frozenChanges(draft) || request && draft[1][3] !== 'Ausencia') return;
+  confirmed = draft.map(row => row.slice());
+  locks = new Set(draftLocks);
+  versions.push(copyGrid());
+  revision += 1;
+  draft = null;
+  draftLocks = null;
+  undo = null;
+  notice = 'Revisión ' + revision + ' confirmada en esta sesión de demostración.';
+  navTo('semana');
+}
+function handle(action) {
+  if (action === 'prev' || action === 'next' || action === 'homeweek') {
+    weekOffset = action === 'prev' ? weekOffset - 1 : action === 'next' ? weekOffset + 1 : 0;
+    notice = '';
+    render();
+    return;
+  }
+  if (action.startsWith('edit-') || action.startsWith('lock-')) {
+    let [mode, ps, ds] = action.split('-'),
+      p = Number(ps),
+      d = Number(ds);
+    if (!draft) beginDraft('manual');
+    undo = {
+      grid: copyGrid(),
+      locks: new Set(draftLocks),
+      manual
+    };
+    if (mode === 'edit') {
+      draft[p][d] = lookup('newval').value.replace(' / ', '|');
+      notice = 'Cambio manual en el borrador. Pendiente de validación.';
+    } else {
+      let id = key(p, d);
+      if (draftLocks.has(id)) draftLocks.delete(id);else draftLocks.add(id);
+      notice = 'Protección de la asignación actualizada en el borrador.';
+    }
+    manual = true;
+    navTo('semana');
+    return;
+  }
+  if (action.startsWith('choose-')) {
+    let type = action.slice(7);
+    if (draft) {
+      pendingChoice = type;
+      navTo('reemplazar');
+      return;
+    }
+    choose(type);
+    notice = 'Borrador de ejemplo preparado sobre la revisión ' + revision + '.';
+    navTo('semana');
+    return;
+  }
+  switch (action) {
+    case 'replaceDraft':
+      choose(pendingChoice);
+      notice = 'Borrador reemplazado en esta sesión.';
+      navTo('semana');
+      break;
+    case 'discard':
+      draft = null;
+      draftLocks = null;
+      undo = null;
+      notice = 'Borrador descartado. Se muestra la revisión ' + revision + '.';
+      navTo('semana');
+      break;
+    case 'confirm':
+      confirmDemo();
+      break;
+    case 'undo':
+      if (undo) {
+        draft = undo.grid;
+        draftLocks = undo.locks;
+        manual = undo.manual;
+        undo = null;
+        notice = 'Se deshizo la última edición del borrador.';
+        render();
+      }
+      break;
+    case 'patron':
+      showBlock();
+      break;
+    case 'vigencia':
+      {
+        let fecha = lookup('vig-fecha').value;
+        lookup('vig-msg').textContent = fecha ? fecha > '2030-04-07' ? 'La regla empezaría después de la semana visible.' : 'La regla requiere revisar el período que incluye esa fecha. El confirmado se conserva.' : 'Elegí la fecha de comienzo.';
+        break;
+      }
+    case 'reqrepair':
+      request = true;
+      navTo('comparar');
+      break;
+    case 'registrar':
+      if (lookup('reqtype').value === 'ausencia') {
+        request = true;
+        navTo('solicitudes');
+      }
+      break;
+    case 'commitment':
+      commitment = true;
+      render();
+      break;
+    case 'settings':
+      settingsReviewed = true;
+      render();
+      break;
+    case 'preview':
+      lookup('export-view').innerHTML = '<h2>Contenido · ' + lookup('fmt').value + '</h2><p>1–7 de abril de 2030 · Revisión ' + revision + ' · Demostración</p>' + table(['Persona', ...shortDays], confirmed.map((row, i) => [names[i], ...row.map(x => x === 'Ausencia' ? 'Ausencia' : display(x))])) + '<p class="help">La maqueta se detiene antes de la escritura del archivo.</p>';
+      break;
+    case 'importpreview':
+      lookup('file-msg').innerHTML = lookup('archivo').value === 'invalido' ? note('No se puede aplicar. El patrón menciona una persona desconocida. Revisá el archivo de origen.', true) : note('Ejemplo válido: nueva regla de apertura con vigencia desde el 15 de abril. Antes de aplicar se debe crear una copia verificada y confirmar el cambio.');
+      break;
+    case 'fileinfo':
+      lookup('file-info').hidden = false;
+      break;
+  }
+}
+let pendingChoice = 'equilibrada';
+pages.reemplazar = () => back('Semana', 'semana') + hero('Elegir propuesta', 'Ya hay un borrador') + note('Si elegís esta propuesta, se reemplazará el borrador de esta sesión. Las revisiones confirmadas seguirán disponibles.') + act(btn('Reemplazar borrador', 'replaceDraft', 'primary'), b('Conservar borrador', 'semana'));
+main.addEventListener('click', e => {
+  const target = e.target.closest('[data-act]');
+  if (target) handle(target.dataset.act);
+});
+main.addEventListener('change', e => {
+  if (e.target.id === 'dia-sel') {
+    selectedDay = Number(e.target.value);
+    render();
+    lookup('dia-sel').focus();
+  }
+  if (e.target.id === 'mes-per') {
+    selectedPerson = Number(e.target.value);
+    render();
+    lookup('mes-per').focus();
+  }
+  if (e.target.id === 'reqtype') {
+    let t = e.target.value;
+    lookup('req-info').textContent = t === 'ausencia' ? 'La ausencia es obligatoria y se descuenta de la disponibilidad real.' : t === 'civil' ? 'Cubre de 00:00 a 00:00 del día siguiente, incluso si la jornada previa termina esa madrugada.' : 'Se intenta conceder el franco cuando las demás reglas lo permiten.';
+    main.querySelector('[data-act="registrar"]').disabled = t !== 'ausencia';
+  }
+});
+lookup('saltar').addEventListener('click', e => {
+  e.preventDefault();
+  main.focus();
+});
+window.addEventListener('hashchange', render);
+render();
+</script></body></html>

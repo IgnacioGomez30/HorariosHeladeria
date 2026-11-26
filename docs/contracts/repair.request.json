@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "1.0",
+  "requestId": "demo-repair",
+  "snapshotToken": "demo-repair-v1",
+  "messageType": "REQUEST",
+  "operation": "REPAIR",
+  "requires": [
+    "cells-v1",
+    "coverage-v1",
+    "repair-v1"
+  ],
+  "scenario": "GUARANTEED",
+  "model": {
+    "timeZone": "America/Argentina/Mendoza",
+    "tzdataVersion": "demo-fixed-2027",
+    "editPeriod": {
+      "start": "2027-02-02",
+      "endExclusive": "2027-02-03"
+    },
+    "visiblePeriod": {
+      "start": "2027-02-02",
+      "endExclusive": "2027-02-03"
+    },
+    "contextPeriod": {
+      "start": "2027-02-02",
+      "endExclusive": "2027-02-03"
+    },
+    "people": [
+      {
+        "id": "demo-A",
+        "role": "EMPLOYEE"
+      },
+      {
+        "id": "demo-B",
+        "role": "EMPLOYEE"
+      }
+    ],
+    "sources": [
+      {
+        "id": "p",
+        "revisionId": "synth-v1",
+        "kind": "PATTERN"
+      },
+      {
+        "id": "notice",
+        "revisionId": "synth-v1",
+        "kind": "EXCEPTION"
+      },
+      {
+        "id": "demand",
+        "revisionId": "synth-v1",
+        "kind": "COVERAGE"
+      }
+    ],
+    "cells": [
+      {
+        "id": "A-tue",
+        "personId": "demo-A",
+        "day": "2027-02-02",
+        "scope": "EDIT",
+        "choices": [
+          {
+            "id": "absent",
+            "selection": {
+              "kind": "ABSENCE",
+              "blocks": []
+            },
+            "sourceIds": [
+              "notice"
+            ],
+            "preferencePenalty": 0
+          }
+        ],
+        "baseline": {
+          "kind": "WORK",
+          "blocks": [
+            {
+              "start": "2027-02-02T18:00:00Z",
+              "end": "2027-02-03T00:00:00Z",
+              "support": "NONE"
+            }
+          ]
+        },
+        "locks": []
+      },
+      {
+        "id": "B-tue",
+        "personId": "demo-B",
+        "day": "2027-02-02",
+        "scope": "EDIT",
+        "choices": [
+          {
+            "id": "normal",
+            "selection": {
+              "kind": "WORK",
+              "blocks": [
+                {
+                  "start": "2027-02-02T17:00:00Z",
+                  "end": "2027-02-02T23:00:00Z",
+                  "support": "NONE"
+                }
+              ]
+            },
+            "sourceIds": [
+              "p"
+            ],
+            "preferencePenalty": 0
+          },
+          {
+            "id": "extended",
+            "selection": {
+              "kind": "WORK",
+              "blocks": [
+                {
+                  "start": "2027-02-02T17:00:00Z",
+                  "end": "2027-02-03T00:00:00Z",
+                  "support": "NONE"
+                }
+              ]
+            },
+            "sourceIds": [
+              "p"
+            ],
+            "preferencePenalty": 0
+          }
+        ],
+        "baseline": {
+          "kind": "WORK",
+          "blocks": [
+            {
+              "start": "2027-02-02T17:00:00Z",
+              "end": "2027-02-02T23:00:00Z",
+              "support": "NONE"
+            }
+          ]
+        },
+        "locks": []
+      }
+    ],
+    "bounds": [],
+    "rest": [],
+    "coverage": [
+      {
+        "ruleId": "demand",
+        "window": {
+          "start": "2027-02-02T18:00:00Z",
+          "end": "2027-02-03T00:00:00Z"
+        },
+        "eligiblePersonIds": [
+          "demo-A",
+          "demo-B"
+        ],
+        "minEmployees": 1,
+        "minTotal": 1,
+        "idealTotal": 1
+      }
+    ],
+    "history": [],
+    "fairness": [],
+    "candidateDomainComplete": true,
+    "boundaryComplete": true
+  },
+  "options": {
+    "profiles": [
+      "BALANCED"
+    ],
+    "timeLimitMs": 1000,
+    "seed": 1,
+    "threads": 1,
+    "minMaterialMinutes": 60,
+    "fairnessToleranceUnits": [
+      0,
+      0,
+      0
+    ],
+    "maxProposals": 1
+  }
+}

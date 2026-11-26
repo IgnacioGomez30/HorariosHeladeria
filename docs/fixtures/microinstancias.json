@@ -1,0 +1,23 @@
+{
+  "formato": "qa-microinstancias-1",
+  "entorno": "SINTETICO",
+  "alcance": "Oráculos reducidos de diseño. No es una configuración importable ni una entrada del motor.",
+  "reparacion": {
+    "personas": ["A", "B", "C"],
+    "fechas": ["2026-12-03", "2026-12-04"],
+    "patrones": {"M": ["12:00","16:00"], "T": ["16:00","20:00"]},
+    "basePorFecha": [["T","M","M"], ["T","M","M"]],
+    "minimoM": 2, "minimoT": 1,
+    "fijados": [{"fecha":"2026-12-03", "persona":"C", "patron":"M"}],
+    "prohibidos": [{"fecha":"2026-12-03", "persona":"A", "patron":"T"}]
+  },
+  "capacidad": {
+    "personas": ["A","B","C","D"],
+    "finesDeSemana": [["2027-02-06","2027-02-07"],["2027-02-13","2027-02-14"],["2027-02-20","2027-02-21"],["2027-02-27","2027-02-28"]],
+    "personasQuePuedenRecibirUnicoFrancoPorDia": [
+      ["A","B","C","D"], ["C","D"], ["A","B","C","D"], ["C","D"],
+      ["C","D"], ["C","D"], ["C","D"], ["C","D"]
+    ],
+    "objetivoDeLaMicroinstancia": 2
+  }
+}

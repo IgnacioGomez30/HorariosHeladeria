@@ -13,3 +13,5 @@ python -m pytest -q
 ```
 
 En PowerShell, la activación equivalente es `.venv\Scripts\Activate.ps1`. También se puede ejecutar la suite con `uv run --locked python -m pytest -q`. La primera instalación necesita acceso al índice de paquetes o una caché preparada. Una vez instalado, el dominio y las pruebas funcionan sin conexión. La única dependencia de ejecución es la base horaria IANA empaquetada en `tzdata`. Pytest y sus dependencias son de desarrollo.
+
+La demostración de la semana, los resultados por requisito y el entorno verificado están en el [informe de F1](docs/20_RESULTADOS_F1.md).

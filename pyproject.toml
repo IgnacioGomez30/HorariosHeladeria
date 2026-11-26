@@ -10,8 +10,11 @@ dev = ["pytest==8.4.2"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests/unit"]
-pythonpath = ["src"]
 addopts = "--strict-markers"
 
-[tool.uv]
-package = false
+[build-system]
+requires = ["uv_build==0.13.9"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "heladeria"

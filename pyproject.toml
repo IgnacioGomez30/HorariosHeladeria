@@ -1,0 +1,17 @@
+[project]
+name = "horarios-heladeria"
+version = "0.1.0"
+description = "Dominio de horarios y francos de la heladería"
+requires-python = ">=3.12,<3.13"
+dependencies = ["tzdata==2026.2"]
+
+[dependency-groups]
+dev = ["pytest==8.4.2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+pythonpath = ["src"]
+addopts = "--strict-markers"
+
+[tool.uv]
+package = false

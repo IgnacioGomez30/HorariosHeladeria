@@ -9,7 +9,7 @@ dependencies = ["tzdata==2026.2"]
 dev = ["pytest==8.4.2"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests/unit"]
+testpaths = ["tests/unit", "tests/integracion"]
 addopts = "--strict-markers"
 
 [build-system]
